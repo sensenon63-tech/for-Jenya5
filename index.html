@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Частная выставка</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle, #3d2314 0%, #1e1109 100%);
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Общие стили для слайдов */
+    .slide {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Заголовок экспоната сверху слайда */
+    .exhibit-header {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #81d8d0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(129, 216, 208, 0.4);
+    }
+
+    /* Карточки в стиле Tiffany */
+    .tiffany-card {
+      border: 2px solid #81d8d0;
+      border-radius: 20px;
+      padding: 25px 30px;
+      width: 100%;
+      text-align: center;
+      background: rgba(25, 14, 9, 0.88);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6),
+                  0 0 20px rgba(129, 216, 208, 0.3);
+      margin-bottom: 20px;
+    }
+
+    .tiffany-card.long-text {
+      text-align: left;
+      padding: 30px 40px;
+    }
+
+    .main-title {
+      font-size: 2rem;
+      color: #81d8d0;
+      margin-bottom: 15px;
+      font-weight: 600;
+      text-shadow: 0 0 10px rgba(129, 216, 208, 0.2);
+    }
+
+    .subtitle-text {
+      font-size: 1.2rem;
+      color: #81d8d0;
+      font-weight: 600;
+      margin-bottom: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .main-text {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #f0ffff;
+      font-style: italic;
+    }
+
+    .main-text p {
+      margin-bottom: 15px;
+    }
+
+    .main-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .sub-card {
+      border: 1.5px solid #81d8d0;
+      border-radius: 12px;
+      padding: 14px 22px;
+      width: 100%;
+      text-align: center;
+      background: rgba(25, 14, 9, 0.88);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 12px rgba(129, 216, 208, 0.2);
+    }
+
+    .sub-text {
+      font-size: 0.95rem;
+      color: #81d8d0;
+    }
+
+    /* Кнопки в цвете Tiffany */
+    .btn {
+      margin-top: 15px;
+      background: #81d8d0;
+      color: #1e1109;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(129, 216, 208, 0.4);
+    }
+
+    .btn:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 255, 255, 0.6);
+    }
+
+    /* Рамки для фото в сетках */
+    .photo-box {
+      border: 2px solid #81d8d0;
+      border-radius: 12px;
+      overflow: hidden;
+      aspect-ratio: 4 / 5;
+      background: rgba(25, 14, 9, 0.6);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5),
+                  0 0 10px rgba(129, 216, 208, 0.15);
+    }
+
+    .photo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background-color: #000;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    .photo-box:hover img {
+      transform: scale(1.03);
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    /* Одиночные фото */
+    .single-photo-box {
+      border: 2px solid #81d8d0;
+      border-radius: 16px;
+      overflow: hidden;
+      max-width: 500px;
+      width: 100%;
+      max-height: 70vh;
+      background: rgba(25, 14, 9, 0.8);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6),
+                  0 0 15px rgba(129, 216, 208, 0.25);
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .single-photo-box img {
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+
+    .grid-7 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    /* Слайд 7: Будущая коллекция */
+    .future-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .future-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .future-box {
+      background: #ffffff;
+      border: 2px solid #81d8d0;
+      border-radius: 16px;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4),
+                  0 0 15px rgba(129, 216, 208, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .future-box:hover {
+      transform: translateY(-3px);
+    }
+
+    .future-text {
+      color: #f0ffff;
+      font-size: 0.95rem;
+      font-weight: 500;
+      line-height: 1.4;
+      font-style: italic;
+      text-align: center;
+    }
+
+    /* Слайд 8: Спецификация экспоната */
+    .exhibit-specs {
+      text-align: left;
+      margin-top: 15px;
+      background: rgba(129, 216, 208, 0.08);
+      border: 1px solid rgba(129, 216, 208, 0.3);
+      border-radius: 12px;
+      padding: 15px 20px;
+    }
+
+    .exhibit-specs p {
+      margin-bottom: 8px;
+      font-size: 1rem;
+    }
+
+    .exhibit-specs p:last-child {
+      margin-bottom: 0;
+    }
+
+    .exhibit-label {
+      color: #81d8d0;
+      font-weight: 600;
+    }
+
+    @media (max-width: 650px) {
+      .grid-3, .grid-2, .future-grid {
+        grid-template-columns: 1fr;
+      }
+      .grid-7 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .tiffany-card.long-text {
+        padding: 20px 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="slide active" id="slide1">
+    <div class="tiffany-card">
+      <h1 class="main-title">Добро пожаловать на частную выставку!</h1>
+      <p class="main-text">
+        Здесь собраны вещи, которые для других могут ничего не значить, но для некоторых они стали частью целой истории.
+      </p>
+    </div>
+
+    <div class="sub-card">
+      <p class="sub-text">Сегодняшняя выставка открыта только для одного важного посетителя.</p>
+    </div>
+
+    <button class="btn" onclick="nextSlide(2)">Войти на выставку →</button>
+  </div>
+
+  <div class="slide" id="slide2">
+    <div class="exhibit-header">Экспонат №1</div>
+    <div class="grid-3">
+      <div class="photo-box"><img src="https://i.postimg.cc/bdd0XCPz/photo-2026-09-01-00-32-40-kopia.jpg" alt="Фото 1"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/5jj5c7JM/2.jpg" alt="Фото 2"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/DmmQVjhv/3.jpg" alt="Фото 3"></div>
+    </div>
+
+    <div class="tiffany-card">
+      <p class="main-text">
+        Я иногда думаю о том, как странно, что когда-то мы были просто двумя людьми, которые вообще не были частью жизни друг друга... а теперь у нас есть история, которую я уже не могу представить без тебя, любимая.
+      </p>
+    </div>
+
+    <button class="btn" onclick="nextSlide(3)">Читать дальше →</button>
+  </div>
+
+  <div class="slide" id="slide3">
+    <div class="exhibit-header">Экспонат №2</div>
+    <div class="single-photo-box">
+      <img src="https://i.postimg.cc/rRWKVtgC/4.jpg" alt="Фото 4">
+    </div>
+
+    <div class="tiffany-card">
+      <div class="main-text">
+        <p>
+          Мне нравится думать о том, что среди всех случайностей этого мира мы как-то нашли друг друга. И даже сейчас, когда между нами столько километров, я всё равно не чувствую, что ты где-то далеко от меня. Ты всё равно остаёшься частью моих дней, в мыслях, в мелочах, в моментах, в песлях. Наверное, расстояние должно было сделать всё сложнее, но вместо этого оно просто научило нас быть рядом по-другому, через сообщения, звонки, фотографии и кружочки. Я рада, что у нас получилось сохранить это ощущение близости, даже когда мы физически так далеко друг от друга.
+        </p>
+        <p>
+          Я просто хочу, чтобы ты всегда знала кое-что важное – ты есть у меня, а я есть у тебя. Неважно, где мы сейчас, сколько между нами городов и сколько времени пройдёт до встречи. Рядом с тобой всегда буду я — человек, который думает о тебе, переживает за тебя, радуется твоим маленьким победам и готов быть рядом, когда тебе это нужно. Я тебя очень сильно люблю и хочу напомнить то, что ты часто забываешь или не признаешь – ты большая молодец, ты наша гордость. Моя гордость. Гордость мамы. Пожалуйста, не забывай и ты гордится Женей)
+        </p>
+      </div>
+    </div>
+
+    <button class="btn" onclick="nextSlide(4)">Следующий экспонат →</button>
+  </div>
+
+  <div class="slide" id="slide4">
+    <div class="exhibit-header">Экспонат №3</div>
+    <div class="grid-2">
+      <div class="photo-box"><img src="https://i.postimg.cc/m1xg5gRF/5.jpg" alt="Фото 5"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/n98hPhZY/6.jpg" alt="Фото 6"></div>
+    </div>
+
+    <div class="tiffany-card">
+      <p class="main-text">
+        Научное доказательство нашей странности
+      </p>
+    </div>
+
+    <button class="btn" onclick="nextSlide(5)">Дальше →</button>
+  </div>
+
+  <div class="slide" id="slide5">
+    <div class="exhibit-header">Экспонат №4</div>
+    <div class="grid-7">
+      <div class="photo-box"><img src="https://i.postimg.cc/jW75Qf0G/7.jpg" alt="Фото 7"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/F1ZKZm89/8.jpg" alt="Фото 8"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/VJSLmt6R/9.jpg" alt="Фото 9"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/xq0fqhCZ/10.jpg" alt="Фото 10"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/bs5pCvRW/11.jpg" alt="Фото 11"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/B8T3nBfd/12.jpg" alt="Фото 12"></div>
+      <div class="photo-box"><img src="https://i.postimg.cc/2L6NTpL5/13.jpg" alt="Фото 13"></div>
+    </div>
+
+    <div class="tiffany-card">
+      <p class="main-text">
+        Экспонат найден в крайне странных обстоятельствах
+      </p>
+    </div>
+
+    <button class="btn" onclick="nextSlide(6)">Смотреть дальше →</button>
+  </div>
+
+  <div class="slide" id="slide6">
+    <div class="exhibit-header">Экспонат №5</div>
+    <div class="single-photo-box">
+      <img src="https://i.postimg.cc/SNB0Zwkb/55.jpg" alt="Фото 55">
+    </div>
+
+    <div class="tiffany-card">
+      <p class="subtitle-text">До сих пор непонятно, что здесь происходило...</p>
+      <p class="main-text">
+        Иногда мне кажется, что половину нашей истории вообще невозможно объяснить другому человеку. Просто потому что только мы знаем, сколько всего стоит за какими-то нашими словами, шутками и даже обычными моментами. Для кого-то это может показаться чем-то совершенно незначительным, а мы обе знаем, почему именно от этого становится смешно. Мне нравится, что не всё можно объяснить. Что у нас есть какие-то вещи, которые понятны только нам. Даже то, что сейчас между нами расстояние, почему-то не делает всё это менее ценным. Наоборот, я иногда думаю, насколько мы близко смогли стать, находясь так далеко друг от друга. И мне очень нравится знать, что где бы мы ни были, у нас всё равно есть то, что принадлежит только нам.)
+      </p>
+    </div>
+
+    <button class="btn" onclick="nextSlide(7)">Будущая коллекция →</button>
+  </div>
+
+  <div class="slide" id="slide7">
+    <div class="exhibit-header">Экспонат №6</div>
+    <div class="tiffany-card">
+      <h1 class="main-title">Коллекция, которая ещё не создана</h1>
+      
+      <div class="future-grid">
+        <div class="future-item">
+          <div class="future-box"></div>
+          <p class="future-text">один день, когда расстояние между нами перестанет существовать</p>
+        </div>
+        
+        <div class="future-item">
+          <div class="future-box"></div>
+          <p class="future-text">фотография, которую мы еще не сделали</p>
+        </div>
+        
+        <div class="future-item">
+          <div class="future-box"></div>
+          <p class="future-text">воспоминание, которое пока существует только в будущем</p>
+        </div>
+        
+        <div class="future-item">
+          <div class="future-box"></div>
+          <p class="future-text">воспоминание, которое существует только в будущем</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn" onclick="nextSlide(8)">Главный экспонат →</button>
+  </div>
+
+  <div class="slide" id="slide8">
+    <div class="exhibit-header">Экспонат №7</div>
+    <div class="single-photo-box">
+      <img src="https://i.postimg.cc/tCKThSc4/67.jpg" alt="Главный экспонат">
+    </div>
+
+    <div class="tiffany-card">
+      <h1 class="main-title">ГЛАВНЫЙ ЭКСПОНАТ МУЗЕЯ</h1>
+      <p class="subtitle-text">Женя Кислякова (02.09.2009)</p>
+      
+      <div class="exhibit-specs">
+        <p><span class="exhibit-label">Происхождение:</span> далеко за горами, за лесами</p>
+        <p><span class="exhibit-label">Расстояние:</span> невьебически большое</p>
+        <p><span class="exhibit-label">Значимость:</span> АХУЕТЬ КАКАЯ</p>
+      </div>
+    </div>
+
+    <button class="btn" onclick="nextSlide(9)">Самое важное →</button>
+  </div>
+
+  <div class="slide" id="slide9">
+    <div class="exhibit-header">Экспонат №8</div>
+    <div class="tiffany-card long-text">
+      <div class="main-text">
+        <p>Я очень хочу, чтобы сегодня ты хотя бы ненадолго посмотрела на себя моими глазами, потому что мне иногда правда непонятно, как человек, которого я считаю настолько красивым, умным, сильным и невероятным, может так часто сомневаться в себе. Ты можешь переживать из-за того, достаточно ли ты хороша, правильно ли что-то делаешь, получится ли у тебя и справляешься ли ты вообще. И мне в такие моменты хочется просто остановить тебя, крепко обнять и напомнить, что ты и так уже большая молодец.</p>
+        
+        <p>Ты правда очень многого стоишь и мне так хочется, чтобы ты перестала обесценивать всё то, что у тебя получается. Не всё должно даваться легко, чтобы считаться достижением. Иногда ты просто продолжаешь идти вперёд, даже когда сама в себе не уверена, даже когда тебе сложно и страшно. Наверное, именно это говорит о тебе намного больше, чем любые достижения.</p>
+        
+        <p>Мне вообще очень нравится быть в твоей жизни, видеть, как ты чего-то добиваешься, как учишься новому, как пытаешься разобраться в том, что сначала кажется сложным и непонятным. Даже когда тебе самой кажется, что у тебя ничего не получается, я всё равно вижу, сколько сил ты вкладываешь, сколько раз пытаешься снова и снова. Я правда очень тобой горжусь.</p>
+        
+        <p>Горжусь не только за какие-то большие достижения, мне хочется гордиться тобой и за самые обычные вещи. За то, что ты продолжаешь двигаться, когда устаёшь. За то, что не перестаёшь пытаться. За то, какая ты внимательная и нежная со мной, даже в те моменты, когда я сама могу вести себя не лучшим образом. За твоё терпение, за твоё большое сердце и за то, какой ты человек.</p>
+        
+        <p>Ты намного сильнее, чем тебе кажется. Намного способнее, чем ты иногда позволяешь себе думать. И намного любимее, чем тебе, возможно, иногда кажется.</p>
+        
+        <p>И я очень надеюсь, что со временем ты сама начнёшь видеть в себе хотя бы часть того, что вижу я. Потому что мне бы так хотелось, чтобы однажды ты посмотрела на себя и хотя бы немного поняла, почему я так тобой восхищаюсь. Почему я так часто смотрю на тебя и думаю, какая же ты невероятная.</p>
+        
+        <p>Спасибо тебе за то, что ты есть у меня, за то, что я могу знать тебя настолько близко, за наши разговоры, за наши смешные моменты, за всё, что мы уже успели прожить вместе. Спасибо за твоё терпение, за твою нежность, за то, что ты остаёшься рядом. Я правда очень ценю тебя, иногда даже больше, чем умею показать словами.</p>
+      </div>
+    </div>
+    
+    <div class="tiffany-card long-text">
+      <div class="main-text">
+        <p>Жан, а теперь в твоей жизни начинается совершенно новый период. Ещё одна большая глава, к которой ты так долго шла. И я правда очень горжусь тобой за то, что ты дошла до этого момента.</p>
+        
+        <p>Я знаю, сколько всего стояло за этим поступлением. Сколько бессонных ночей, слёз, стресса и нервов было до того, как ты оказалась здесь. Но всё это уже позади. Ты справилась, любимая, ты дошла до этого момента. И теперь перед тобой столько всего нового: новые люди, новые места, новые впечатления и какие-то совершенно неожиданные истории, которые сейчас ты даже не можешь себе представить. И мне хочется, чтобы ты прожила этот период именно по-своему. Не пыталась сразу всё знать и уметь. Не боялась ошибаться. Пробовала новое, находила людей, рядом с которыми тебе хорошо, открывала для себя новые места и постепенно строила ту жизнь, которой сама захочешь гордиться.</p>
+        
+        <p>Пусть университет принесёт тебе не только знания, но и воспоминания, которые останутся с тобой надолго. Пусть у тебя появятся любимые места, случайные разговоры, новые друзья и смешные истории, которые потом будут вспоминаться с улыбкой. Пусть будут бессонные ночи, спонтанные решения, какие-то невероятные моменты и дни, когда ты вдруг остановишься и поймёшь, что находишься именно там, где должна быть.</p>
+        
+        <p>И я очень хочу быть рядом с тобой во всём этом. Хочу видеть, как ты проходишь через этот новый этап своей жизни. Радоваться твоим успехам, слушать твои истории, узнавать обо всём новом, что с тобой происходит. Поддерживать тебя после сложных дней и вместе с тобой радоваться тем дням, которые окажутся лучшими. Я надеюсь, что среди всех этих новых событий у нас тоже всегда будет своё место. Что, несмотря ни на что, расстояние между нами постепенно будет сокращаться во всех смыслах. Потому что мне очень хочется быть к тебе ближе, везде и во всём.</p>
+        
+        <p>Хочу всегда оставаться той, с кем ты можешь поделиться всем. Тем человеком, которому ты можешь написать после самого сложного дня или позвонить, когда тебе просто хочется поговорить. Хочу быть плечом, на котором ты можешь поплакать, рукой, которая будет держать твою и вместе с тобой смело идти вперёд. Хочу быть твоей опорой, твоим спокойствием и человеком, рядом с которым тебе не нужно бояться быть собой.</p>
+        
+        <p>И пусть сейчас между нами есть расстояние, я хочу, чтобы ты всегда знала: я рядом. Может быть, не всегда так, как мне самой хотелось бы, не так близко физически, как я мечтаю, но всем сердцем я всегда рядом с тобой.</p>
+        
+        <p>С днём рождения, любимая.</p>
+        
+        <p>Я очень тебя люблю, моя невероятная девушка)</p>
+      </div>
+    </div>
+
+    <button class="btn" onclick="nextSlide(1)">Пройти выставку заново ↻</button>
+  </div>
+
+  <script>
+    function nextSlide(slideNumber) {
+      document.querySelectorAll('.slide').forEach(slide => {
+        slide.classList.remove('active');
+      });
+      document.getElementById('slide' + slideNumber).classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
