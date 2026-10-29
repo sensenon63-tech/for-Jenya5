@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legal Tech — Ответы по практикам</title>
+  <style>
+    :root {
+      --primary-color: #1e3a8a;
+      --secondary-color: #2563eb;
+      --bg-color: #f1f5f9;
+      --card-bg: #ffffff;
+      --text-color: #0f172a;
+      --border-color: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .main-wrapper {
+      display: flex;
+      flex: 1;
+      max-width: 1200px;
+      width: 100%;
+      margin: 1.5rem auto;
+      gap: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    /* Боковая навигация по слайдам */
+    nav {
+      width: 260px;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      height: fit-content;
+    }
+
+    nav h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--border-color);
+      padding-bottom: 0.5rem;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    nav li {
+      margin-bottom: 0.3rem;
+    }
+
+    nav button {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: var(--text-color);
+      transition: all 0.2s;
+    }
+
+    nav button:hover, nav button.active {
+      background-color: #eff6ff;
+      color: var(--secondary-color);
+      font-weight: 600;
+    }
+
+    /* Контейнер слайдов */
+    .slide-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      display: none;
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      min-height: 480px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(5px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Оформление первого слайда */
+    .title-slide {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 2rem;
+    }
+
+    .title-slide h2 {
+      font-size: 2rem;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .title-slide h3 {
+      font-size: 1.2rem;
+      color: #64748b;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+
+    .student-card {
+      background: #f8fafc;
+      border: 2px dashed var(--secondary-color);
+      padding: 1.5rem 2.5rem;
+      border-radius: 12px;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .student-card p {
+      margin: 0.4rem 0;
+      font-size: 1.05rem;
+    }
+
+    .student-card .name {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    /* Оформление содержательных слайдов */
+    .slide-header {
+      border-bottom: 2px solid var(--secondary-color);
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-tag {
+      display: inline-block;
+      background: #dbeafe;
+      color: var(--secondary-color);
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+    }
+
+    .question-title {
+      font-size: 1.25rem;
+      color: var(--primary-color);
+      margin: 0;
+    }
+
+    .answer-box {
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .answer-box h4 {
+      color: var(--secondary-color);
+      margin: 1.2rem 0 0.4rem 0;
+    }
+
+    .answer-box ul {
+      padding-left: 1.2rem;
+      margin-top: 0.4rem;
+    }
+
+    /* Управление слайдами */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .btn {
+      background: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-color);
+    }
+
+    .btn:disabled {
+      background: #cbd5e1;
+      cursor: not-allowed;
+    }
+
+    .page-indicator {
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .main-wrapper {
+        flex-direction: column;
+      }
+      nav {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Правовые информационные технологии (Legal Tech)</h1>
+    <p>Национальный университет Узбекистана</p>
+  </header>
+
+  <div class="main-wrapper">
+    <!-- Меню выбора слайда -->
+    <nav>
+      <h3>Слайды</h3>
+      <ul>
+        <li><button class="nav-btn active" onclick="goToSlide(0)">📌 Главный слайд</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(1)">П1. Образовательные ИТ</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(2)">П2. Windows и Файлы</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(3)">П3. ChatGPT & Промпты</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(4)">П4. DeepSeek & Grok</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(5)">П5. Текст & СПС</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(6)">П6. Анализ документов (1)</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(7)">П7. Анализ документов (2)</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(8)">П8. Бланки и Шаблоны</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(9)">П9. Таблицы & Данные</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(10)">П10. Функции MS Excel</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(11)">П11. Базы данных (1)</button></li>
+        <li><button class="nav-btn" onclick="goToSlide(12)">П12. Базы данных (2)</button></li>
+      </ul>
+    </nav>
+
+    <!-- Область слайдов -->
+    <div class="slide-container">
+
+      <!-- Слайд 0: Главная / Титульный -->
+      <div class="slide title-slide active">
+        <h2>Правовые информационные технологии (Legal Tech)</h2>
+        <h3>Презентация и ответы по практическим занятиям (П1 – П12)</h3>
+        
+        <div class="student-card">
+          <p>Национальный университет Узбекистана</p>
+          <p>Факультет Юриспруденции | Группа: <b>2601</b></p>
+          <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 0.8rem 0;">
+          <p>Работа студента:</p>
+          <p class="name">Ботиров Сардор</p>
+        </div>
+      </div>
+
+      <!-- Слайд 1 (П1) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П1</span>
+          <h2 class="question-title">Вопрос: Работа с современными образовательными средствами ИТ. Классификация и описание применения систем.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <p><b>Образовательные ИТ</b> — это комплекс программных и информационных средств для организации учебного процесса.</p>
+          <h4>Классификация и применение:</h4>
+          <ul>
+            <li><b>LMS (Moodle, Google Classroom):</b> Платформы для размещения учебных материалов, сдачи практических работ и тестирования.</li>
+            <li><b>Системы ВКС (Zoom, MS Teams):</b> Проведение дистанционных лекций и судебных инсценировок.</li>
+            <li><b>Электронные библиотеки (СПС / LexisNexis):</b> Доступ к научным статьям и нормативным актам для юристов.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 2 (П2) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П2</span>
+          <h2 class="question-title">Вопрос: Работа с файлами и папками в Windows. Архивирование и защита данных от вирусов.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Файловая система Windows:</b> Иерархическая структура. Основные действия: создание, редактирование, перемещение и защита прав доступа к юридическим документам.</li>
+            <li><b>Архивация (WinRAR, 7-Zip):</b> Сжатие файлов для экономии места и безопасности при отправке по электронной почте.</li>
+            <li><b>Защита от вирусов:</b> Использование антивирусного ПО (Windows Defender), установки паролей на архивы и резервное копирование файлов.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 3 (П3) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П3</span>
+          <h2 class="question-title">Вопрос: Использование ИИ-платформ. Prompt Engineering на примере ChatGPT.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <p><b>Prompt Engineering</b> — составление точных запросов для генерации качественных юридических ответов от ИИ.</p>
+          <h4>Применение ChatGPT юристом:</h4>
+          <ul>
+            <li>Быстрое составление проектов (драфтов) типовых договоров и исков.</li>
+            <li>Суммаризация (краткая выжимка) многостраничных судебных решений.</li>
+            <li><b>Формула промпта:</b> Роль (например, <i>"Ты юрист"</i>) + Контекст + Задача + Ограничения.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 4 (П4) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П4</span>
+          <h2 class="question-title">Вопрос: Особенности и применение Prompt Engineering в DeepSeek и Grok.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>DeepSeek:</b> Специализируется на глубоком логическом анализе, решении сложных математических и структурированных правовых задач.</li>
+            <li><b>Grok:</b> Интегрирован с источниками данных в реальном времени, что позволяет анализировать актуальные правовые новости и тренды.</li>
+            <li><b>Вывод:</b> ChatGPT эффективен для текстов, DeepSeek — для глубокого правового анализа, Grok — для мониторинга новостей.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 5 (П5) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П5</span>
+          <h2 class="question-title">Вопрос: Обработка текстов, форматирование и работа с Справочно-правовыми системами (СПС).</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Форматирование в MS Word:</b> Соблюдение стандартов юридического делопроизводства (стили, сноски, нумерация статей).</li>
+            <li><b>Правовые системы (СПС):</b> Использование специализированных баз данных законодательства для быстрого поиска действующих редакций законов.</li>
+            <li><b>Режим рецензирования:</b> Отслеживание правок нескольких юристов при согласовании договоров.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 6 (П6) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П6</span>
+          <h2 class="question-title">Вопрос: Цифровой анализ юридических документов и обработка текстовой информации (Часть 1).</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Технология OCR (ABBYY FineReader):</b> Оптическое распознавание текста для перевода сканированных документов в редактируемый формат.</li>
+            <li><b>Извлечение ключевых данных:</b> Автоматический поиск сторон, сумм, сроков и предмета договора с помощью специальных алгоритмов.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 7 (П7) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П7</span>
+          <h2 class="question-title">Вопрос: Цифровой анализ юридических документов и обработка текстовой информации (Часть 2).</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Автоматическое сравнение текстов:</b> Выявление скрытых изменений и неоговоренных правок в редакция контрактов.</li>
+            <li><b>Проверка рисков (Due Diligence):</b> Сканирование договоров на наличие ссылок на недействующие законы или противоречивые условия.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 8 (П8) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П8</span>
+          <h2 class="question-title">Вопрос: Подготовка бланков заявления, приказа, договора, резюме и писем на основе шаблонов.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <p>Создание единого стилевого оформления официальных документов компании с помощью <b>Шаблонов (.dotx)</b> в MS Word.</p>
+          <ul>
+            <li><b>Заявление:</b> Наличие реквизитов адресата, заявителя и сути обращения.</li>
+            <li><b>Приказ:</b> Наличие распорядительной части («ПРИКАЗЫВАЮ») и ответственных лиц.</li>
+            <li><b>Договор:</b> Наличие преамбулы, предмета, прав, обязанностей и реквизитов.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 9 (П9) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П9</span>
+          <h2 class="question-title">Вопрос: Обработка статистических данных в MS Excel. Основные понятия и типы данных.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Структура электронных таблиц:</b> Ячейки, строки и столбцы. Каждая ячейка имеет уникальный адрес (например, A1).</li>
+            <li><b>Типы данных:</b>
+              <ul>
+                <li><i>Текстовый:</i> ФИО участников, категории преступлений.</li>
+                <li><i>Числовой:</i> Суммы исков, размер ущерба.</li>
+                <li><i>Дата/Время:</i> Даты судебных заседаний.</li>
+                <li><i>Формулы:</i> Начинаются со знака <code>=</code> для расчетов.</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 10 (П10) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П10</span>
+          <h2 class="question-title">Вопрос: Обработка юридической статистики. Функции, сортировка и диаграммы в Excel.</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Ключевые функции:</b>
+              <ul>
+                <li><code>=СУММ()</code> — итоговый подсчет сумм исков.</li>
+                <li><code>=СРЗНАЧ()</code> — средний срок рассмотрения дел.</li>
+                <li><code>=СЧЁТЕСЛИ()</code> — подсчет количества дел определенной категории.</li>
+              </ul>
+            </li>
+            <li><b>Диаграммы:</b> Визуализация динамики правонарушений с помощью гистограмм и круговых диаграмм.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 11 (П11) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П11</span>
+          <h2 class="question-title">Вопрос: Создание, хранение, ведение и редактирование баз данных по специальности (Часть 1).</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>База данных (БД):</b> Упорядоченное хранилище больших объемов юридической информации (например, реестр судимостей или физических лиц).</li>
+            <li><b>Таблицы:</b> Главный объект БД, состоящий из полей (столбцов) и записей (строк).</li>
+            <li><b>Формы:</b> Экранные бланки для удобного ввода и просмотра данных пользователем.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Слайд 12 (П12) -->
+      <div class="slide">
+        <div class="slide-header">
+          <span class="slide-tag">Тема П12</span>
+          <h2 class="question-title">Вопрос: Организация запросов, форм, отчетов и страниц баз данных по специальности (Часть 2).</h2>
+        </div>
+        <div class="answer-box">
+          <h4>Ответ:</h4>
+          <ul>
+            <li><b>Запросы (Queries):</b> Инструмент для отбора и фильтрации данных по условиям (например, выборка всех договоров за 2026 год). Использование языка SQL.</li>
+            <li><b>Отчеты (Reports):</b> Итоговые форматированные документы для вывода данных из БД на печать или предоставления руководству.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Панель переключения слайдов -->
+      <div class="controls">
+        <button class="btn" id="prevBtn" onclick="changeSlide(-1)">← Назад</button>
+        <span class="page-indicator" id="pageIndicator">Слайд 1 из 13</span>
+        <button class="btn" id="nextBtn" onclick="changeSlide(1)">Вперед →</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const totalSlides = slides.length;
+
+    function updateSlides() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+
+      navButtons.forEach((btn, index) => {
+        btn.classList.toggle('active', index === currentSlide);
+      });
+
+      document.getElementById('prevBtn').disabled = currentSlide === 0;
+      document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+      document.getElementById('pageIndicator').innerText = `Слайд ${currentSlide + 1} из ${totalSlides}`;
+    }
+
+    function goToSlide(index) {
+      currentSlide = index;
+      updateSlides();
+    }
+
+    function changeSlide(direction) {
+      currentSlide += direction;
+      if (currentSlide < 0) currentSlide = 0;
+      if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+      updateSlides();
+    }
+
+    // Инициализация
+    updateSlides();
+  </script>
+</body>
+</html>
